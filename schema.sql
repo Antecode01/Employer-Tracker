@@ -8,13 +8,13 @@ CREATE DATABASE employees_db;
 USE employee_db;
 
 
-CREATE TABLE department (
+CREATE TABLE departments (
   id int NOT NULL AUTO_INCREMENT,
   name varchar(30) NOT NULL,
   PRIMARY KEY (id)
 );
 
-CREATE TABLE role(
+CREATE TABLE roles(
  id INT NOT NULL AUTO_INCREMENT,
  title VARCHAR(30)
  salary INT
@@ -23,7 +23,7 @@ CREATE TABLE role(
 
 
 )
-CREATE TABLE employee(
+CREATE TABLE employees(
   id INT NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(30),
   last_name VARCHAR(30),
@@ -33,6 +33,6 @@ CREATE TABLE employee(
 
 )
 
-INSERT INTO tasks (task) VALUES ('Pick up milk.');
-INSERT INTO tasks (task) VALUES ('Mow the lawn.');
-INSERT INTO tasks (task) VALUES ('Call Shannon back.');
+INSERT INTO departments (name) VALUES ('enginering')
+INSERT INTO roles (title,salary) VALUES ('manager,5000')
+INSERT INTO employees (first_name,last_name) VALUES ('Anteneh,Negera')
