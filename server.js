@@ -27,8 +27,7 @@ function tracker() {
         "Add Department",
         "Add Roles",
         "Add Employees",
-        "Remove Department",
-        "Remove Employee",
+
         "View Departments",
         "View Roles",
         "View Employees",
@@ -40,10 +39,6 @@ function tracker() {
         addDepartments();
       } else if (answer.would === "Add Roles") {
         addRoles();
-      } else if (answer.would === "Remove Department") {
-        removeDepartment();
-      } else if (answer.would === "Remove Employee") {
-        removeEmployee();
       } else if (answer.would === "Add Employees") {
         addEmployees();
       } else if (answer.would === "View Departments") {
@@ -154,61 +149,6 @@ function addEmployees() {
         },
         function (error) {
           if (error) throw error;
-          tracker();
-        }
-      );
-    });
-}
-
-function removeDepartment() {
-  inquirer
-    .prompt({
-      type: "input",
-      message: "What department do you want to remove?",
-      name: "name",
-    })
-    .then((answer) => {
-      connection.query(
-        "DELETE FROM departments WHERE ?",
-        { name: answer.name },
-        (err, res) => {
-          if (err) throw err;
-          console.table((res.affectedRows = "Department Removed!"));
-          tracker();
-        }
-      );
-    });
-}
-function removeEmployee() {
-  inquirer
-    .prompt([
-      {
-        type: "input",
-        message: "What is their first name?",
-        name: "first_name",
-      },
-      {
-        type: "input",
-        message: "What is their last name?",
-        name: "last_name",
-      },
-      {
-        type: "input",
-        message: "What is their role id?",
-        name: "role_id",
-      },
-    ])
-    .then((answer) => {
-      connection.query(
-        "DELETE FROM employees WHERE id = 5",
-        {
-          first_name: answer.first_name,
-          last_name: answer.last_name,
-          role_id: answer.role_id,
-        },
-        (err, res) => {
-          if (err) throw err;
-          console.table(res.affectedRows + "Employee Removed!");
           tracker();
         }
       );
