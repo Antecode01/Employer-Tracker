@@ -2,9 +2,8 @@ const express = require("express");
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const app = express();
-//create server port an
+//create server port
 const PORT = process.env.PORT || 4000;
-//create database connection
 const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -12,12 +11,12 @@ const connection = mysql.createConnection({
   password: "761456",
   database: "employees_db",
 });
-//connect to database
 connection.connect(function (err) {
   if (err) throw err;
-  console.log("connection made!");
+  console.log("connection as id " + connection.threadId + "\n");
   tracker();
 });
+
 function tracker() {
   inquirer
     .prompt({
@@ -33,7 +32,7 @@ function tracker() {
         "View Departments",
         "View Roles",
         "View Employees",
-        "Update Employee Role",
+        "Update Employee Roles",
       ],
     })
     .then(function (answer) {
@@ -71,13 +70,13 @@ function addDepartments() {
     ])
     .then(function (answer) {
       connection.query(
-        "INSERT INTO departments SET ?",
+        "INSERT INTO department SET ?",
         {
           name: answer.department,
         },
         function (error) {
           if (error) throw error;
-          console.table(res.affectedRows + "Department Added");
+
           tracker();
         }
       );
@@ -88,16 +87,28 @@ function addRoles() {
   inquirer
     .prompt([
       {
-        name: "roles",
+        name: "title",
         type: "input",
         message: "what roles would you like to add?",
+      },
+      {
+        name: "salary",
+        type: "input",
+        message: "salary for the role?",
+      },
+      {
+        name: "deptid",
+        type: "input",
+        message: "the department id?",
       },
     ])
     .then(function (answer) {
       connection.query(
         "INSERT INTO roles SET ?",
         {
-          name: answer.roles,
+          title: answer.title,
+          salary: answer.salary,
+          department_id: answer.deptid,
         },
         function (error) {
           if (error) throw error;
@@ -122,27 +133,27 @@ function addEmployees() {
       },
       {
         name: "role_id",
-        type: "list",
-        message: "what is the department id?",
-        choices: [
-          { value: 1, name: "Accountant" },
-          { value: 2, name: "Sales associate" },
-          { value: 3, name: "Warehouse" },
-          { value: 4, name: "Legal" },
-        ],
+        type: "input",
+        message: "what is the role id?",
+      },
+      {
+        name: "manager_id",
+        type: "input",
+        message: "what is the manager id?",
       },
     ])
+
     .then(function (answer) {
       connection.query(
-        "INSERT INTO employees SET ?",
+        "INSERT INTO employee SET ?",
         {
           first_name: answer.first_name,
           last_name: answer.last_name,
-          role_id: answer.role_id,
+          roles_id: answer.role_id,
+          manager_id: answer.manager_id,
         },
         function (error) {
           if (error) throw error;
-          console.table(res.affectedRows + "Employee Added");
           tracker();
         }
       );
@@ -229,38 +240,32 @@ function ViewEmployees() {
 }
 
 function updateEmployeeRoles() {
+  console.log("inside update employee role");
+
   inquirer
-    .prompt(
+    .prompt([
       {
-        type: "list",
-        message: "What is their new role?",
+        type: "input",
+        message: "What is their new role id?",
         name: "role_id",
-        choices: [
-          { value: 1, name: "Accountant" },
-          { value: 2, name: "Sales associate" },
-          { value: 3, name: "Warehouse" },
-          { value: 4, name: "Legal" },
-        ],
       },
       {
         type: "input",
-        message: "What is their first name",
-        name: "first_name",
+        message: "What is the employee's  id ",
+        name: "id",
       },
-      {
-        type: "input",
-        message: "What is their last name?",
-        name: "last_name",
-      }
-    )
+    ])
     .then((answer) => {
       connection.query(
-        "UPDATE employees SET ? WHERE ?",
-        {
-          role_id: answer.choices,
-          first_name: answer.first_name,
-          last_name: answer.last_name,
-        },
+        "UPDATE employee SET ? WHERE ?",
+        [
+          {
+            roles_id: answer.role_id,
+          },
+          {
+            id: answer.id,
+          },
+        ],
         (err, res) => {
           if (err) throw err;
           console.table(res.affectedRows + "Employee Role Updated");
